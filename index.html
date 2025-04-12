@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnings Dashboard</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <script src='//whephiwums.com/sdk.js' data-zone='9204716' data-sdk='show_9204716'></script>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f72585;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-color);
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            height: 100%;
+        }
+        
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            margin-bottom: 15px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .stats-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .stats-card .icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .stats-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .stats-card p {
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        .earn-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
+        }
+        
+        .earn-card h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .earn-btn {
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .earn-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .recent-activity {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(67, 97, 238, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        .activity-details h5 {
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .activity-details p {
+            color: #6c757d;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container animate__animated animate__fadeIn" id="dashboardPage">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <img src="https://ui-avatars.com/api/?name=User+Name&background=random" alt="User Avatar" class="user-avatar">
+                        <h4>User Name</h4>
+                        <p>ID: USER12345</p>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="#"><i class="fas fa-wallet"></i> Withdraw</a></li>
+                        <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                        <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Help</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="main-content">
+                    <div class="header">
+                        <h2>Earnings Dashboard</h2>
+                        <div>
+                            <span class="badge bg-primary">Active</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <div class="icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <h3 id="balance">0</h3>
+                                <p>Total Earnings</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <div class="icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <h3>5</h3>
+                                <p>Withdrawals</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <div class="icon">
+                                    <i class="fas fa-ad"></i>
+                                </div>
+                                <h3>27</h3>
+                                <p>Ads Watched</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="earn-card">
+                        <h2>Earn Money by Watching Ads</h2>
+                        <p>Click the button below to watch an ad and earn money instantly!</p>
+                        <button class="earn-btn" id="showAdButton">Watch Ad & Earn <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                    
+                    <div class="recent-activity">
+                        <h4>Recent Activity</h4>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-ad"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h5>Ad Watched</h5>
+                                <p>+10 points • 2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h5>Withdrawal Request</h5>
+                                <p>100 points • 1 day ago</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-ad"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h5>Ad Watched</h5>
+                                <p>+10 points • 1 day ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>© 2023 Earnings App. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-container hidden" id="withdrawPage">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <img src="https://ui-avatars.com/api/?name=User+Name&background=random" alt="User Avatar" class="user-avatar">
+                        <h4>User Name</h4>
+                        <p>ID: USER12345</p>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <div class="main-content">
+                    <h2>Withdraw Your Earnings</h2>
+                    <p>Fill out the form below to request a withdrawal</p>
+                    
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="userName" class="form-label">Your Name or Number</label>
+                                <input id="userName" type="text" class="form-control" placeholder="Enter your name or phone number">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="paymentMethod" class="form-label">Payment Method</label>
+                                <select id="paymentMethod" class="form-select">
+                                    <option value="" disabled selected>Select Payment Method</option>
+                                    <option value="BKash">BKash</option>
+                                    <option value="Nagad">Nagad</option>
+                                    <option value="Rocket">Rocket</option>
+                                    <option value="PayPal">PayPal</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount (Current balance: <span id="withdrawBalance">0</span> points)</label>
+                                <input id="amount" type="number" class="form-control" placeholder="Enter amount to withdraw">
+                            </div>
+                            
+                            <button id="submitRequest" class="btn btn-primary w-100 py-2">Submit Withdrawal Request</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        const TELEGRAM_BOT_TOKEN = "7756947298:AAEGw4qV_lPJ_26UuE2Gfj2mIfehej9h8b4";
+        const TELEGRAM_CHAT_ID = "6076273140";
+        let points = parseInt(localStorage.getItem('points')) || 0;
+        
+        function updateBalance() {
+            document.getElementById('balance').innerText = points;
+            document.getElementById('withdrawBalance').innerText = points;
+            localStorage.setItem('points', points);
+        }
+        
+        function showAd() {
+            show_9204716().then(() => {
+                points += 10;
+                updateBalance();
+                toastr.success('You watched an ad and earned 10 points!', 'Congratulations');
+                
+                // Add to recent activity
+                const activityContainer = document.querySelector('.recent-activity');
+                const newActivity = document.createElement('div');
+                newActivity.className = 'activity-item';
+                newActivity.innerHTML = `
+                    <div class="activity-icon">
+                        <i class="fas fa-ad"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h5>Ad Watched</h5>
+                        <p>+10 points • Just now</p>
+                    </div>
+                `;
+                activityContainer.insertBefore(newActivity, activityContainer.firstChild.nextSibling);
+                
+            }).catch((error) => {
+                toastr.error('There was an error displaying the ad.', 'Error');
+                console.error(error);
+            });
+        }
+        
+        function switchToWithdrawPage() {
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('withdrawPage').classList.remove('hidden');
+        }
+        
+        function switchToDashboardPage() {
+            document.getElementById('withdrawPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.remove('hidden');
+        }
+        
+        function submitWithdrawalRequest() {
+            const userName = document.getElementById('userName').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const amount = parseInt(document.getElementById('amount').value) || 0;
+            
+            if (!userName || !paymentMethod || amount > points || amount <= 0) {
+                toastr.error('Please fill out all fields correctly or ensure you have enough balance.', 'Error');
+                return;
+            }
+            
+            points -= amount;
+            updateBalance();
+            
+            const message = `
+                💰 *Withdrawal Request*
+                👤 Name/Number: ${userName}
+                💳 Method: ${paymentMethod}
+                💵 Amount: ${amount}
+                📊 New Balance: ${points}
+                🕒 Status: Pending Review
+            `;
+            
+            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    chat_id: TELEGRAM_CHAT_ID, 
+                    text: message, 
+                    parse_mode: 'Markdown' 
+                })
+            }).then(() => {
+                toastr.success('Withdrawal request submitted successfully!', 'Success');
+                switchToDashboardPage();
+                
+                // Add to recent activity
+                const activityContainer = document.querySelector('.recent-activity');
+                const newActivity = document.createElement('div');
+                newActivity.className = 'activity-item';
+                newActivity.innerHTML = `
+                    <div class="activity-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h5>Withdrawal Request</h5>
+                        <p>-${amount} points • Just now</p>
+                    </div>
+                `;
+                activityContainer.insertBefore(newActivity, activityContainer.firstChild.nextSibling);
+                
+            }).catch(() => {
+                toastr.error('Failed to send request to Telegram.', 'Error');
+            });
+        }
+        
+        // Event listeners
+        document.getElementById('showAdButton').addEventListener('click', showAd);
+        document.querySelector('.sidebar-menu li:nth-child(2) a').addEventListener('click', function(e) {
+            e.preventDefault();
+            switchToWithdrawPage();
+        });
+        document.getElementById('backToDashboard').addEventListener('click', function(e) {
+            e.preventDefault();
+            switchToDashboardPage();
+        });
+        document.getElementById('submitRequest').addEventListener('click', submitWithdrawalRequest);
+        
+        // Initialize
+        updateBalance();
+    </script>
+</body>
+</html>
